@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opening Messages...</title>
+  <script>
+    window.onload = function() {
+      const params = new URLSearchParams(window.location.search);
+      const to = params.get('to') || '';
+      const msg = params.get('msg') || '';
+      if (to) {
+        window.location.href = "sms:" + encodeURIComponent(to) + "?&body=" + encodeURIComponent(msg);
+      }
+    };
+  </script>
+</head>
+<body style="font-family: sans-serif; text-align: center; padding-top: 20vh; background: #0b0f19; color: #fff;">
+  <p>Opening Google Messages...</p>
+</body>
+</html>
