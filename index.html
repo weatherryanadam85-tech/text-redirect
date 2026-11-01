@@ -13,23 +13,26 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 90vh;
+      height: 80vh;
       margin: 0;
+      text-align: center;
     }
     .btn {
       background: #2563eb;
       color: #ffffff;
-      padding: 18px 36px;
-      font-size: 20px;
-      font-weight: 700;
+      padding: 18px 32px;
+      font-size: 18px;
+      font-weight: bold;
       border-radius: 12px;
       text-decoration: none;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+      display: inline-block;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <a id="smsLink" class="btn" href="#">Open in Google Messages</a>
+  <h3>Opening Google Messages...</h3>
+  <a id="smsBtn" class="btn" href="#">Tap here to Send Text</a>
 
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -37,25 +40,17 @@
     const msg = params.get('msg') || '';
 
     if (to) {
-      // Android Intent scheme specifically targeting Google Messages
+      // Strip everything except numbers and '+' (e.g., +12672178030)
       const cleanPhone = to.replace(/[^0-9+]/g, '');
-      const encodedMsg = encodeURIComponent(msg);
       
-      // Native Android Intent URL
-      const intentUrl = "intent://send?phone=" + cleanPhone + "&body=" + encodedMsg + "#Intent;scheme=smsto;package=com.google.android.apps.messaging;action=android.intent.action.SENDTO;end";
+      // Standard Android URI format: sms:+1XXXXXXXXXX?body=YourEncodedMessage
+      const smsUri = "sms:" + cleanPhone + "?body=" + encodeURIComponent(msg);
       
-      // Fallback smsto protocol
-      const smstoUrl = "smsto:" + cleanPhone + "?body=" + encodedMsg;
+      const link = document.getElementById('smsBtn');
+      link.href = smsUri;
 
-      const link = document.getElementById('smsLink');
-      link.href = intentUrl;
-
-      // Automatically attempt handoff, with fallback to smsto
-      try {
-        window.location.href = intentUrl;
-      } catch (e) {
-        window.location.href = smstoUrl;
-      }
+      // Automatically launch messages app
+      window.location.href = smsUri;
     }
   </script>
 </body>
