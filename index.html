@@ -3,19 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Opening Messages...</title>
-  <script>
-    window.onload = function() {
-      const params = new URLSearchParams(window.location.search);
-      const to = params.get('to') || '';
-      const msg = params.get('msg') || '';
-      if (to) {
-        window.location.href = "sms:" + encodeURIComponent(to) + "?&body=" + encodeURIComponent(msg);
-      }
-    };
-  </script>
+  <title>Send SMS</title>
+  <style>
+    body {
+      background: #0b0f19;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 90vh;
+      margin: 0;
+    }
+    .btn {
+      background: #2563eb;
+      color: #ffffff;
+      padding: 18px 36px;
+      font-size: 20px;
+      font-weight: 700;
+      border-radius: 12px;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    }
+  </style>
 </head>
-<body style="font-family: sans-serif; text-align: center; padding-top: 20vh; background: #0b0f19; color: #fff;">
-  <p>Opening Google Messages...</p>
+<body>
+  <a id="smsLink" class="btn" href="#">Open in Google Messages</a>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const to = params.get('to') || '';
+    const msg = params.get('msg') || '';
+
+    if (to) {
+      // Standard Android format: ?body= (not ?&body=)
+      const uri = "sms:" + encodeURIComponent(to) + "?body=" + encodeURIComponent(msg);
+      const link = document.getElementById('smsLink');
+      link.href = uri;
+
+      // Try automatic launch; if Chrome blocks it, the big blue button is ready to tap
+      link.click();
+    }
+  </script>
 </body>
 </html>
