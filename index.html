@@ -37,13 +37,25 @@
     const msg = params.get('msg') || '';
 
     if (to) {
-      // Standard Android format: ?body= (not ?&body=)
-      const uri = "sms:" + encodeURIComponent(to) + "?body=" + encodeURIComponent(msg);
-      const link = document.getElementById('smsLink');
-      link.href = uri;
+      // Android Intent scheme specifically targeting Google Messages
+      const cleanPhone = to.replace(/[^0-9+]/g, '');
+      const encodedMsg = encodeURIComponent(msg);
+      
+      // Native Android Intent URL
+      const intentUrl = "intent://send?phone=" + cleanPhone + "&body=" + encodedMsg + "#Intent;scheme=smsto;package=com.google.android.apps.messaging;action=android.intent.action.SENDTO;end";
+      
+      // Fallback smsto protocol
+      const smstoUrl = "smsto:" + cleanPhone + "?body=" + encodedMsg;
 
-      // Try automatic launch; if Chrome blocks it, the big blue button is ready to tap
-      link.click();
+      const link = document.getElementById('smsLink');
+      link.href = intentUrl;
+
+      // Automatically attempt handoff, with fallback to smsto
+      try {
+        window.location.href = intentUrl;
+      } catch (e) {
+        window.location.href = smstoUrl;
+      }
     }
   </script>
 </body>
